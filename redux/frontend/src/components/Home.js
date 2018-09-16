@@ -1,49 +1,34 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react';
 import { connect } from 'react-redux'
-import { fetchPosts } from '../assets/actions'
-import {
-  Grid,
-  Paper
-} from '@material-ui/core'
-import Post from './Post'
+import { fetchPosts } from '../assets/actions';
+import Post from './Post';
+import {sortBy} from 'sort-by'
+
 class Home extends Component {
-
     componentDidMount() {
-        const   { dispatch } = this.props;
-        dispatch(fetchPosts())
+        const { dispatch } = this.props;
+        dispatch(fetchPosts());
     }
-
-
-
     render() {
+        const { postsReducer } = this.props;
+        const showingPosts = Object.values(postsReducer);
+        // showingPosts.sort(sortBy('-voteScore'))
 
-        const { postsReducer } = this.props
-        console.log('****', postsReducer    )
-        const showingPosts = Object.values(postsReducer)
-        console.log(this.props)
         return (
-            
-               <div className='posts'>
-                 {showingPosts.length > 0 &&
-                  showingPosts.map((post) => {
-                      return (
-                         <div>
-                          <Post post={post} />
-                       
-                         </div>
+            <div className='posts'>
+             {showingPosts.length > 0 &&
+               showingPosts.map((post) => {
+                   return (
+                    <Post key={post.id} post={post} />
+                   )
 
-                       
-                      )
-                      
-                  })}
+               })
 
-               </div>
-           
-           
-
+             }
+            </div>
         )
-
     }
 }
-const mapStateToProps = ({postsReducer}) => ({postsReducer})
-export default connect(mapStateToProps)(Home);
+
+const mapStateToProps = ({postsReducer}) => ({postsReducer});
+export default connect (mapStateToProps)(Home);

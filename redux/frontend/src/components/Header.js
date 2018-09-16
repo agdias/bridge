@@ -1,68 +1,59 @@
-import React, { Component } from 'react';
-
-import { fetchCategories } from '../assets/actions'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
-import AppBar from '@material-ui/core/AppBar'
-import { Typography, Toolbar } from '@material-ui/core';
-import createMuiTheme from '@material-ui/core/styles'
-import purple from '@material-ui/core/colors/purple'
+import { fetchCategories } from '../assets/actions';
+import { Link  } from 'react-router-dom'
 
-
+import whatshot from '../assets/icons/whatshot.svg'
+import date_range from '../assets/icons/date_range.svg'
+import add from '../assets/icons/add.svg'
 
 
 
 class Header extends Component {
-
     componentDidMount() {
         const { dispatch } = this.props;
         dispatch(fetchCategories());
     }
 
-  
+    render() {
+        const { categoryReducer } = this.props;
+        const showingCategories = Object.values(categoryReducer);
 
-  render() {
 
-
-      const { categoryReducer } = this.props;
-      const categories = Object.values(categoryReducer)
-      
-     
-      return (
+        return (
           <div className='header'>
-            <AppBar color='default' position='static'>
-              <Toolbar>
-                <Typography color='textSecondary' variant='headline'>
-                 <Link to='/'>readable</Link> 
-                </Typography>
+            <div className='header-top'>
+              <div className='logo'><Link to='/'>Readable talks</Link></div>
+              <div className='category-menu'>
                 <ul>
-                {categories.length > 0 &&
-                    categories.map((category) => {
+                  <li><Link to='/'>home</Link></li>
+                  {(showingCategories.length > 0) &&
+                    showingCategories.map((category) => {
                         return (
-                          <Link to={`${category.name}`}>
-                            
-                        
-                            <li key={category.name}>{category.name}</li>
-                          </Link>
+                            <li key={category.name}>
+                               <Link to={`/${category.name}/posts`}>  {category.name} </Link>
+                           </li>
                         )
-                      
                     })
-                
-                }
-                
+                  }
                 </ul>
-              
-              </Toolbar>
-            
-            </AppBar>
-          
+              </div>
+              <div className='sort-menu'>
+                <ul>
+                 <li className='menu-button'><img src={whatshot}/></li>
+                 <li><Link to='/create-post'><img src={date_range}/></Link></li>
+                 <li><Link to='/create-post'><img src={add}/></Link></li>
+
+                </ul>
+              </div>
+
+            </div>
           </div>
-          
-      )
-  }
+
+
+        )
+    }
 }
-
-
 const mapStateToProps = ({categoryReducer}) => ({categoryReducer})
 
 export default connect(mapStateToProps)(Header);
